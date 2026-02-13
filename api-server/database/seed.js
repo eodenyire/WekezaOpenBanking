@@ -66,11 +66,19 @@ const seedData = async () => {
     ];
     
     for (const tx of transactions) {
+      // Generate unique transaction reference using UUID-like approach
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substr(2, 9);
+      const txRef = `TXN${timestamp}${random}`.toUpperCase();
+      
       await client.query(`
         INSERT INTO transactions (transaction_ref, account_id, transaction_type, amount, description, status)
         VALUES ($1, $2, $3, $4, $5, 'completed')
         ON CONFLICT (transaction_ref) DO NOTHING
-      `, [`TXN${Date.now()}${Math.random().toString(36).substr(2, 9)}`, tx.accountId, tx.type, tx.amount, tx.desc]);
+      `, [txRef, tx.accountId, tx.type, tx.amount, tx.desc]);
+      
+      // Add small delay to prevent collisions
+      await new Promise(resolve => setTimeout(resolve, 10));
     }
     
     await client.query('COMMIT');

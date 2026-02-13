@@ -47,7 +47,7 @@ router.post('/',
 );
 
 // GET /api/v1/payments/:id - Get payment details
-router.get('/:id', authenticateToken, checkScopes(['payments.write']), async (req, res, next) => {
+router.get('/:id', authenticateToken, checkScopes(['payments.read', 'payments.write']), async (req, res, next) => {
   try {
     const payment = await paymentsService.getPayment(req.params.id);
     res.json(payment);
@@ -60,7 +60,7 @@ router.get('/:id', authenticateToken, checkScopes(['payments.write']), async (re
 });
 
 // GET /api/v1/payments/:id/status - Get payment status
-router.get('/:id/status', authenticateToken, checkScopes(['payments.write']), async (req, res, next) => {
+router.get('/:id/status', authenticateToken, checkScopes(['payments.read', 'payments.write']), async (req, res, next) => {
   try {
     const status = await paymentsService.getPaymentStatus(req.params.id);
     res.json(status);
@@ -73,7 +73,7 @@ router.get('/:id/status', authenticateToken, checkScopes(['payments.write']), as
 });
 
 // GET /api/v1/payments - List payments
-router.get('/', authenticateToken, checkScopes(['payments.write']), async (req, res, next) => {
+router.get('/', authenticateToken, checkScopes(['payments.read', 'payments.write']), async (req, res, next) => {
   try {
     const filters = {
       sourceAccountId: req.query.sourceAccountId,

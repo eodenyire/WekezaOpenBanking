@@ -50,8 +50,14 @@ class WebhookService {
         `, [webhook.id, eventType, JSON.stringify(eventData)]);
       }
       
-      // Process deliveries asynchronously
-      this.processDeliveries();
+      // Process deliveries asynchronously (wrap in try-catch for error handling)
+      try {
+        this.processDeliveries().catch(err => {
+          logger.error('Background webhook processing error:', err);
+        });
+      } catch (error) {
+        logger.error('Failed to start webhook processing:', error);
+      }
       
       return { queued: webhooks.rows.length };
     } catch (error) {
@@ -62,15 +68,16 @@ class WebhookService {
 
   async processDeliveries() {
     try {
-      // Get pending deliveries
+      // Get pending deliveries (configurable limit for scalability)
+      const limit = process.env.WEBHOOK_BATCH_SIZE || 10;
       const deliveries = await pool.query(`
         SELECT wd.*, w.url, w.secret
         FROM webhook_deliveries wd
         JOIN webhooks w ON wd.webhook_id = w.id
         WHERE wd.status = 'pending'
           AND (wd.next_retry_at IS NULL OR wd.next_retry_at <= CURRENT_TIMESTAMP)
-        LIMIT 10
-      `);
+        LIMIT $1
+      `, [limit]);
       
       for (const delivery of deliveries.rows) {
         await this.deliverWebhook(delivery);

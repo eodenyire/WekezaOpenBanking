@@ -123,28 +123,30 @@ describe('API Server', () => {
     });
 
     it('should initiate payment with valid data', async () => {
-      if (!accountId) {
-        console.log('Skipping test: No account available');
-        return;
+      if (accountsResponse.body.data.length > 0) {
+        const accountId = accountsResponse.body.data[0].id;
+        
+        const response = await request(app)
+          .post('/api/v1/payments')
+          .set('Authorization', `Bearer ${accessToken}`)
+          .set('Idempotency-Key', `test_${Date.now()}`)
+          .send({
+            sourceAccountId: accountId,
+            destinationAccountNumber: '1009876543',
+            amount: 100.00,
+            currency: 'KES',
+            reference: 'TEST-PAYMENT',
+            description: 'Test payment'
+          })
+          .expect(201);
+        
+        expect(response.body).toHaveProperty('id');
+        expect(response.body).toHaveProperty('paymentRef');
+        expect(response.body).toHaveProperty('status');
+      } else {
+        // Skip test if no account available
+        test.skip('No account available for testing');
       }
-
-      const response = await request(app)
-        .post('/api/v1/payments')
-        .set('Authorization', `Bearer ${accessToken}`)
-        .set('Idempotency-Key', `test_${Date.now()}`)
-        .send({
-          sourceAccountId: accountId,
-          destinationAccountNumber: '1009876543',
-          amount: 100.00,
-          currency: 'KES',
-          reference: 'TEST-PAYMENT',
-          description: 'Test payment'
-        })
-        .expect(201);
-      
-      expect(response.body).toHaveProperty('id');
-      expect(response.body).toHaveProperty('paymentRef');
-      expect(response.body).toHaveProperty('status');
     });
 
     it('should reject payment without required fields', async () => {

@@ -41,10 +41,12 @@ class PaymentsService {
       // Generate payment reference
       const paymentRef = `PAY${Date.now()}${crypto.randomBytes(4).toString('hex').toUpperCase()}`;
       
-      // Calculate risk score (simple mock)
-      const riskScore = Math.random() * 0.5; // 0-0.5
+      // Calculate risk score (simple implementation - should be more sophisticated in production)
+      // Risk factors: amount, account history, destination, etc.
+      const amountRisk = paymentData.amount > 100000 ? 0.3 : 0.1;
+      const riskScore = Math.min(amountRisk + Math.random() * 0.2, 0.99);
       
-      // Create payment
+      // Create payment in processing status
       const payment = await client.query_one(`
         INSERT INTO payments (
           payment_ref, source_account_id, destination_account_number,
@@ -86,7 +88,9 @@ class PaymentsService {
         `Payment: ${paymentData.reference || paymentRef}`
       ]);
       
-      // Simulate payment processing (in real system, this would be async)
+      // Simulate async payment processing (in real system, this would be a background job)
+      // For demo purposes, we mark as completed immediately
+      // TODO: Implement proper async payment processing with worker queues
       await client.query(`
         UPDATE payments
         SET status = 'completed', completed_at = CURRENT_TIMESTAMP
