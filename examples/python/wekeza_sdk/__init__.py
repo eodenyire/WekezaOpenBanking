@@ -6,7 +6,7 @@ from .client import WekezaClient
 from .auth import WekezaAuth
 from .accounts import WekezaAccounts
 from .payments import WekezaPayments
-from .webhooks import WekezaWebhooks
+from .webhooks import WekezaWebhooks, WebhookVerificationError, InvalidWebhookPayloadError
 
 __version__ = "1.0.0"
 __all__ = [
@@ -14,5 +14,7 @@ __all__ = [
     "WekezaAuth",
     "WekezaAccounts",
     "WekezaPayments",
-    "WekezaWebhooks"
+    "WekezaWebhooks",
+    "WebhookVerificationError",
+    "InvalidWebhookPayloadError"
 ]

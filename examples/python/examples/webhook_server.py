@@ -85,4 +85,6 @@ if __name__ == '__main__':
     print(f'  ngrok http {PORT}')
     print('  Then configure the ngrok URL in your Wekeza developer dashboard\n')
     
-    app.run(host='0.0.0.0', port=PORT, debug=True)
+    # Only enable debug mode in development, not production
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=PORT, debug=debug_mode)

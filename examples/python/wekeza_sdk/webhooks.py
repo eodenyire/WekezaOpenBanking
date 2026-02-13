@@ -9,6 +9,16 @@ import json
 from typing import Dict, Any, Callable
 
 
+class WebhookVerificationError(Exception):
+    """Raised when webhook signature verification fails"""
+    pass
+
+
+class InvalidWebhookPayloadError(Exception):
+    """Raised when webhook payload is invalid"""
+    pass
+
+
 class WekezaWebhooks:
     """Handles webhook signature verification and event processing"""
     
@@ -50,15 +60,16 @@ class WekezaWebhooks:
             Dict containing parsed event data
             
         Raises:
-            Exception: If signature is invalid or payload is not valid JSON
+            WebhookVerificationError: If signature is invalid
+            InvalidWebhookPayloadError: If payload is not valid JSON
         """
         if not self.verify_signature(payload, signature):
-            raise Exception("Invalid webhook signature")
+            raise WebhookVerificationError("Invalid webhook signature")
         
         try:
             return json.loads(payload)
         except json.JSONDecodeError as e:
-            raise Exception(f"Invalid webhook payload: not valid JSON - {str(e)}")
+            raise InvalidWebhookPayloadError(f"Invalid webhook payload: not valid JSON - {str(e)}")
     
     def handle_event(self, event: Dict[str, Any], handlers: Dict[str, Callable]) -> Any:
         """
@@ -70,11 +81,14 @@ class WekezaWebhooks:
             
         Returns:
             Handler result
+            
+        Raises:
+            InvalidWebhookPayloadError: If event type is missing
         """
         event_type = event.get('type') or event.get('event_type')
         
         if not event_type:
-            raise Exception("Event type not specified in webhook payload")
+            raise InvalidWebhookPayloadError("Event type not specified in webhook payload")
         
         handler = handlers.get(event_type)
         

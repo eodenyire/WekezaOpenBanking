@@ -112,7 +112,7 @@ class WekezaAccounts:
             try:
                 data = response.json()
                 message = data.get('message') or data.get('error') or 'Unknown error'
-            except:
+            except Exception:
                 message = response.text or 'Unknown error'
             return Exception(f"API Error ({response.status_code}): {message}")
         elif isinstance(error, requests.RequestException):
