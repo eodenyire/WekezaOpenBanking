@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: wekeza-db
+    environment:
+      POSTGRES_DB: wekeza_banking
+      POSTGRES_USER: wekeza_user
+      POSTGRES_PASSWORD: wekeza_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wekeza_user -d wekeza_banking"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api-server:
+    build: ./api-server
+    container_name: wekeza-api
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: wekeza_banking
+      DB_USER: wekeza_user
+      DB_PASSWORD: wekeza_password
+      JWT_SECRET: your_jwt_secret_change_in_production
+      JWT_REFRESH_SECRET: your_refresh_secret_change_in_production
+      OAUTH_CLIENT_ID: sandbox_client
+      OAUTH_CLIENT_SECRET: sandbox_secret_key
+      WEBHOOK_SECRET: webhook_secret_key
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./api-server:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  postgres_data:
