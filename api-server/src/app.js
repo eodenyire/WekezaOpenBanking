@@ -14,6 +14,7 @@ const rateLimiter = require('./middleware/rateLimiter');
 const oauthRoutes = require('./routes/oauth');
 const accountsRoutes = require('./routes/accounts');
 const paymentsRoutes = require('./routes/payments');
+const webhooksRoutes = require('./routes/webhooks');
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.get('/health', (req, res) => {
 app.use('/oauth', oauthRoutes);
 app.use(`/api/${config.server.apiVersion}/accounts`, accountsRoutes);
 app.use(`/api/${config.server.apiVersion}/payments`, paymentsRoutes);
+app.use(`/api/${config.server.apiVersion}/webhooks`, webhooksRoutes);
 
 // 404 handler
 app.use((req, res) => {
