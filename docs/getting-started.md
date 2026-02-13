@@ -235,8 +235,8 @@ Now that you've made your first API call, explore these resources:
 ### 💻 Code Examples
 - **[JavaScript Examples](../examples/javascript/)** - Node.js and browser
 - **[Python Examples](../examples/python/)** - Python 3.8+
-- **[C# Examples](../examples/csharp/)** - .NET 8
-- **[Java Examples](../examples/java/)** - Java 17+
+- **C# Examples** - Coming soon
+- **Java Examples** - Coming soon
 
 ### 🎓 Tutorials
 - **[Building a Fintech App](tutorials/building-fintech-app.md)** - End-to-end guide

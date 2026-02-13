@@ -270,7 +270,7 @@ Check real-time API status at [status.wekeza.com](https://status.wekeza.com)
 ## 🎓 Learning Resources
 
 - **[API Best Practices](docs/guides/best-practices.md)** - Industry standards
-- **[Video Tutorials](https://youtube.com/wekevadev)** - Visual learning
+- **[Video Tutorials](https://youtube.com/wekeza-dev)** - Visual learning
 - **[Case Studies](docs/case-studies/)** - Success stories
 - **[Webinars](https://wekeza.com/webinars)** - Live training sessions
 

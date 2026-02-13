@@ -805,9 +805,9 @@ def test_list_accounts(accounts):
 ## Next Steps
 
 - [JavaScript Examples](../javascript/) - Node.js integration
-- [C# Examples](../csharp/) - .NET integration
-- [API Reference](../../api-reference/) - Complete API documentation
-- [Authentication Guide](../../authentication.md) - OAuth 2.0 setup
+- **C# Examples** - Coming soon
+- [API Reference](../../docs/api-reference/) - Complete API documentation
+- [Authentication Guide](../../docs/authentication.md) - OAuth 2.0 setup
 
 ---
 
